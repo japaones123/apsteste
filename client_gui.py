@@ -3,6 +3,48 @@ import threading
 import tkinter as tk
 from tkinter import scrolledtext
 from tkinter import simpledialog
+from tkinter import ttk  #emoji
+
+
+def abrir_janela_emojis():
+    janela_emojis = tk.Toplevel(janela)
+    janela_emojis.title("Selecionar Emoji")
+    janela_emojis.configure(bg="#2c2f33")
+    janela_emojis.resizable(False, False)
+
+    notebook = ttk.Notebook(janela_emojis)
+    notebook.pack(padx=10, pady=10)
+
+    categorias = {
+        "Carinhas": ['😀', '😂', '😍', '😢', '😡', '😎'],
+        "Gestos": ['👍', '🙏', '👎', '🤙', '👏', '👌'],
+        "Símbolos": ['❤️', '💔', '🎉', '💀', '✨', '🔥']
+    }
+
+    for nome_categoria, lista_emojis in categorias.items():
+        frame = tk.Frame(notebook, bg="#2c2f33")
+        notebook.add(frame, text=nome_categoria)
+
+        linha = 0
+        coluna = 0
+        for emoji in lista_emojis:
+            btn = tk.Button(
+                frame,
+                text=emoji,
+                width=4,
+                font=("Arial", 14),
+                command=lambda em=emoji: inserir_emoji_no_chat(em, janela_emojis)
+            )
+            btn.grid(row=linha, column=coluna, padx=5, pady=5)
+            coluna += 1
+            if coluna > 5:
+                coluna = 0
+                linha += 1
+
+def inserir_emoji_no_chat(emoji, janela_emojis):
+    entrada_mensagem.insert(tk.END, emoji)
+    janela_emojis.destroy()
+
 
 # Função para receber mensagens do servidor
 def receber_mensagens():
@@ -66,6 +108,19 @@ botao_enviar = tk.Button(
     font=('Verdana', 10, 'bold')
 )
 botao_enviar.pack(padx=5, pady=5, side='left')
+
+# Botão para abrir janela de emojis
+botao_emoji = tk.Button(
+    janela,
+    text="😀",
+    command=lambda: abrir_janela_emojis(),
+    fg='white',
+    bg='#7289da',
+    activebackground='#5b6eae',
+    font=('Verdana', 10, 'bold')
+)
+botao_emoji.pack(padx=5, pady=5, side='left')
+
 
 # Perguntar o nome do usuário
 nome = simpledialog.askstring("Nome", "Digite seu nome:")
